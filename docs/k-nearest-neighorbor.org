@@ -1,0 +1,31 @@
+* [[https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm][K-Nearest-Neighbor]]
+
+** Resources
+[[http://www.csee.umbc.edu/~tinoosh/cmpe650/slides/K_Nearest_Neighbor_Algorithm.pdf][Weighted KNN - Siddharth Deokar]]
+
+** Attributes
++ Supervised Learning
+  + Classification - output class membership
+  + Regression - average value of knn
++ Non-Parametric
++ Configurability
+  + Weight contributions of neighbors by distance
++ Drawbacks
+  + Sensitive to local data structure
+  + Curse of Dimensionality - problematic when only few features are relevant but distance calculated using several
++ Distance
+  + [[file:distances/euclidean-distance.org][Euclidean Distance]]
+  + Minkowski Distance
+  + Mahalanobis Distance
+
+** Algorithm
+*** Weighted K Nearest Neighbor
+**** Approach 1
+1. Assign weights to features
+2. Calculate classification error
+3. Adjust weights to account for error
+4. Repeat till accurate enough
+
+**** Approach 2
+1. Use all features
+2. Remove feature and test for improvement

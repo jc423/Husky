@@ -1,0 +1,11 @@
+* Distances
+
+** Resources
+[[https://en.wikipedia.org/wiki/Euclidean_distance][Euclidean Distance - Wikipedia]]
+[[https://www.youtube.com/watch?v=xUkvr5Z0b8U][Euclidean Space]] 
+* Euclidean
+** Attributes
++ Definition - the "straight-line" distance between two points in Euclidean space
++ Calculation
+  + $d(\mathbf{A},\mathbf{B}) = \sqrt{\sum_{i=1}^n (A_i - B_i)^2}$
+

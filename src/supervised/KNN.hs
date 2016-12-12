@@ -1,8 +1,10 @@
 module KNN where
 
+import Data.Function
 import Data.List as List
 import Data.Ord (comparing)
 import Distance
+import Sort
 
 type Features = [Double]
 data Classified a = Classified {features::Features,
@@ -10,21 +12,14 @@ data Classified a = Classified {features::Features,
                                }
 
 
---mostFrequent::Ord a => [(a,b)] -> b
---mostFrequent xs = snd $ head $ Map.toList $ List.foldl (\map (k, v) -> Map.insert k (currentValue k map) map) Map.empty xs
---  where currentValue k map = case Map.lookup k map of
---                               Nothing -> 0
---                               Just v -> v
-  
+mostCommon xs = fst $ head $ head $ reverse $ sortBy (comparing length) $ groupBy ((==) `on` fst) $ sortBy (comparing fst) xs
+
+
 knn:: DistanceFunction Features Features Double -> Int -> [Classified Double] -> Features -> Double
-knn dist k train unknown = fst $ head $ take k $ tuple_qs $ List.map (\x -> (label x, dist (features x) unknown)) train
-
-tuple_qs :: (Ord b) => [(a, b)] -> [(a, b)];
-tuple_qs [] = [];
-tuple_qs (x:xs) = [ lower | lower <- xs, (snd lower) <= (snd x) ] ++ [x] ++ [ higher | higher <- xs, (snd higher) >= (snd x) ];
+knn dist k train unknown = mostCommon $ take k $ Sort.tuple_qs $ List.map (\x -> (label x, dist (features x) unknown)) train
 
 
-unknownCar = [1979.0, 25.0, 1250.0]
+unknownCar = [2015.0, 75.0, 150.0]
 cars = [Classified { features=[1982.0, 30.0, 1200.0], label=3000.0 },
         Classified { features=[1981.0, 20.0, 1300.0], label=2000.0 },
         Classified { features=[1983.0, 10.0, 1500.0], label=2000.0 },

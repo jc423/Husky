@@ -12,13 +12,26 @@ type Features = [Feature]
 data Classified a = Classified {features::Features,
                                 label::a
                                }
+data Neighbor a = Neighbor {distance::Double,
+                            labeled::a}
 
-mostCommon:: Ord a =>[(a, Double)] -> a
-mostCommon xs = fst $ head $ head $ reverse $ sortBy (comparing length) $ groupBy ((==) `on` fst) $ sortBy (comparing fst) xs
+instance Eq a => Eq (Neighbor a) where
+  (==) (Neighbor d1 l1)  (Neighbor d2 l2) = l1 == l2
+
+-- why do we need Ord a when compare is on distance
+instance Ord a => Ord (Neighbor a) where
+  Neighbor d1 l1 `compare` Neighbor d2 l2 = d1 `compare` d2
+  
+
+weighted::Ord a => [Neighbor a] -> a
+weighted xs = labeled $ last $ sortBy (comparing distance)$ map (\x -> Neighbor {labeled=labeled (head x), distance=(sum [1/distance y | y <- x])}) $ group $ sortBy (comparing labeled) xs
+
+mostCommon:: Ord a => [Neighbor a] -> a
+mostCommon xs = labeled $ head $ last $ sortBy (comparing length) $ group $ sortBy (comparing labeled) xs
 
 
-knn:: Ord a => DistanceFunction Feature -> Int -> [Classified a] -> Features -> a
-knn dist k train unknown = mostCommon $ take k $ Sort.tuple_qs $ List.map (\x -> (label x, dist (features x) unknown)) train
+knn:: Ord a => DistanceFunction Feature -> Int -> ([Neighbor a] -> a) -> [Classified a] -> Features -> a
+knn dist k weightFn train unknown = weightFn $ take k $ sort $ List.map (\x -> Neighbor{labeled=(label x),distance=(dist (features x) unknown)}) train
 
 
 unknownCar1 = [2015.0, 75.0, 150.0]
@@ -30,7 +43,7 @@ carsPrice = [Classified { features=[1982.0, 30.0, 1200.0], label=3000.0 },
         Classified { features=[1985.0, 5.0, 1100.0], label=1000.0 },
         Classified { features=[2011.0, 60.0, 120.0], label=10000.0 },
         Classified { features=[2010.0, 70.0, 130.0], label=10000.0 },
-        Classified { features=[2015.0, 80.0, 140.0], label=10000.0 }];
+        Classified { features=[3015.0, 80.0, 140.0], label=30000.0 }];
 
 carsAge = [Classified { features=[1982.0, 30.0, 1200.0], label="ancient" },
         Classified { features=[1981.0, 20.0, 1300.0], label="old" },
@@ -42,17 +55,3 @@ carsAge = [Classified { features=[1982.0, 30.0, 1200.0], label="ancient" },
 
 -- examples
 
-euclideanKNNPrice = knn euclidean 3 carsPrice
-manhattanKNNPrice = knn manhattan 3 carsPrice
-euclideanKNNAge = knn euclidean 3 carsAge
-manhattanKNNAge = knn manhattan 3 carsAge
-
-unknownCar1Price = euclideanKNNPrice unknownCar1
-unknownCar1Age = euclideanKNNPrice unknownCar1
-unknownCar2Price = euclideanKNNPrice unknownCar2
-unknownCar2Age = euclideanKNNPrice unknownCar2
-
-unknownCar1PriceM = manhattanKNNPrice unknownCar1
-unknownCar1AgeM = manhattanKNNPrice unknownCar1
-unknownCar2PriceM = manhattanKNNPrice unknownCar2
-unknownCar2AgeM = manhattanKNNPrice unknownCar2

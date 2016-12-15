@@ -19,7 +19,7 @@ library
                        Distance
                        Supervised.KNN
   build-depends:       base >= 4.7 && < 5,
-                       containers,
+                       containers
   default-language:    Haskell2010
 
 executable Husky-exe

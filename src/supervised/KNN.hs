@@ -33,8 +33,18 @@ mostCommon xs = labeled $ head $ last $ sortBy (comparing length) $ group $ sort
 knn:: Ord a => DistanceFunction Feature -> Int -> ([Neighbor a] -> a) -> [Classified a] -> Features -> a
 knn dist k weightFn train unknown = weightFn $ take k $ sort $ List.map (\x -> Neighbor{labeled=(label x),distance=(dist (features x) unknown)}) train
 
+cosineKNN::Ord a => Int -> ([Neighbor a] -> a) -> [Classified a] -> Features -> a
+cosineKNN = knn cosineDistance
 
-unknownCar1 = [2015.0, 75.0, 150.0]
+euclideanKNN::Ord a => Int -> ([Neighbor a] -> a) -> [Classified a] -> Features -> a
+euclideanKNN = knn euclidean
+
+manhattanKNN::Ord a => Int -> ([Neighbor a] -> a) -> [Classified a] -> Features -> a
+manhattanKNN = knn manhattan
+
+-- examples
+  
+unknownCar1 = [6030.0, 160.0, 280.0]
 unknownCar2 = [2015.0, 10.0, 1500.0]
 
 carsPrice = [Classified { features=[1982.0, 30.0, 1200.0], label=3000.0 },
@@ -51,7 +61,7 @@ carsAge = [Classified { features=[1982.0, 30.0, 1200.0], label="ancient" },
         Classified { features=[1985.0, 5.0, 1100.0], label="old" },
         Classified { features=[2011.0, 60.0, 120.0], label="eh" },
         Classified { features=[2010.0, 70.0, 130.0], label="eh" },
-        Classified { features=[2015.0, 80.0, 140.0], label="new" }];
+        Classified { features=[2010.0, 50.0, 140.0], label="new" }];
 
--- examples
+
 

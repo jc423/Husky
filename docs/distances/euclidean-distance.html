@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2016-12-06 Tue 21:08 -->
+<!-- 2016-12-15 Thu 00:04 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="viewport" content="width=device-width, initial-scale=1" />
 <title></title>
@@ -169,30 +169,51 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgheadline3">1. Euclidean Distance</a>
+<li><a href="#orgheadline2">1. Distances</a>
 <ul>
 <li><a href="#orgheadline1">1.1. Resources</a></li>
-<li><a href="#orgheadline2">1.2. Attributes</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline4">2. Euclidean</a>
+<ul>
+<li><a href="#orgheadline3">2.1. Attributes</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline6">3. Manhattan</a>
+<ul>
+<li><a href="#orgheadline5">3.1. Attributes</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline8">4. Cosine Similarity</a>
+<ul>
+<li><a href="#orgheadline7">4.1. Attributes</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgheadline3" class="outline-2">
-<h2 id="orgheadline3"><span class="section-number-2">1</span> Euclidean Distance</h2>
+<div id="outline-container-orgheadline2" class="outline-2">
+<h2 id="orgheadline2"><span class="section-number-2">1</span> Distances</h2>
 <div class="outline-text-2" id="text-1">
 </div><div id="outline-container-orgheadline1" class="outline-3">
 <h3 id="orgheadline1"><span class="section-number-3">1.1</span> Resources</h3>
 <div class="outline-text-3" id="text-1-1">
-<p>
-<a href="https://en.wikipedia.org/wiki/Euclidean_distance">Euclidean Distance - Wikipedia</a>
-</p>
+<ul class="org-ul">
+<li><a href="https://en.wikipedia.org/wiki/Euclidean_distance">Euclidean Distance - Wikipedia</a></li>
+<li><a href="https://www.youtube.com/watch?v=xUkvr5Z0b8U">Euclidean Space</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Cosine_similarity">Cosine Similarity - Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Taxicab_geometry">Manhattan Distance - Wikipedia</a></li>
+</ul>
+</div>
 </div>
 </div>
 
-<div id="outline-container-orgheadline2" class="outline-3">
-<h3 id="orgheadline2"><span class="section-number-3">1.2</span> Attributes</h3>
-<div class="outline-text-3" id="text-1-2">
+<div id="outline-container-orgheadline4" class="outline-2">
+<h2 id="orgheadline4"><span class="section-number-2">2</span> Euclidean</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-orgheadline3" class="outline-3">
+<h3 id="orgheadline3"><span class="section-number-3">2.1</span> Attributes</h3>
+<div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>Definition - the "straight-line" distance between two points in Euclidean space</li>
 <li>Calculation
@@ -203,10 +224,42 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
+<div id="outline-container-orgheadline6" class="outline-2">
+<h2 id="orgheadline6"><span class="section-number-2">3</span> Manhattan</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-orgheadline5" class="outline-3">
+<h3 id="orgheadline5"><span class="section-number-3">3.1</span> Attributes</h3>
+<div class="outline-text-3" id="text-3-1">
+<ul class="org-ul">
+<li>Definition - the grid distance between two points in Euclidean space. Also referred to as taxi cab distance, imagine getting from one corner in NYC to another corner.</li>
+<li>Calculation
+<ul class="org-ul">
+<li>\(d(\mathbf{A},\mathbf{B}) = {\sum_{i=1}^n |A_i - B_i|}\)</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgheadline8" class="outline-2">
+<h2 id="orgheadline8"><span class="section-number-2">4</span> Cosine Similarity</h2>
+<div class="outline-text-2" id="text-4">
+</div><div id="outline-container-orgheadline7" class="outline-3">
+<h3 id="orgheadline7"><span class="section-number-3">4.1</span> Attributes</h3>
+<div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li>Definition - the measure of the angle formed by two vectors, therefore judgment not based on magnitude.</li>
+<li>Calculation
+<ul class="org-ul">
+<li>\(d(\mathbf{A},\mathbf{B})= \frac{\mathbf{A}\mathbf{B}}{\|\mathbf{A}\|\|\mathbf{B}\|} = \frac{\sum_{i=1}^n A_i B_i}{\sqrt{\sum_{i=1}^n (A_i)^2}\sqrt{\sum_{i=1}^n (B_i)^2}}\)</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Joe Crawford</p>
-<p class="date">Created: 2016-12-06 Tue 21:08</p>
+<p class="date">Created: 2016-12-15 Thu 00:04</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

@@ -58,7 +58,7 @@ carsPrice = [Classified { features=[1982.0, 30.0, 1200.0], label=3000.0 },
 carsAge = [Classified { features=[1982.0, 30.0, 1200.0], label="ancient" },
         Classified { features=[1981.0, 20.0, 1300.0], label="old" },
         Classified { features=[1983.0, 10.0, 1500.0], label="old" },
-        Classified { features=[1985.0, 5.0, 1100.0], label="old" },
+        Classified { features=[1985.0, 5.0, 100.0], label="old" },
         Classified { features=[2011.0, 60.0, 120.0], label="eh" },
         Classified { features=[2010.0, 70.0, 130.0], label="eh" },
         Classified { features=[2010.0, 50.0, 140.0], label="new" }];

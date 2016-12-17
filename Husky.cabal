@@ -5,8 +5,8 @@ description:         Please see README.md
 homepage:            https://github.com/githubuser/Husky#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
+author:              Joe Crawford, Kenny Huang
+maintainer:          jc423@buffalo.edu
 copyright:           2016 Author name here
 category:            Web
 build-type:          Simple

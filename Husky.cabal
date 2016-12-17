@@ -34,7 +34,7 @@ executable Husky-exe
 test-suite Husky-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
-  main-is:             DistanceSpec.hs
+  main-is:             Spec.hs
   build-depends:       base
                      , hspec
                      , Husky

@@ -9,7 +9,7 @@ main :: IO ()
 main = hspec spec
 
 spec :: Spec
-spec = hspec $ do
+spec = do
   describe "Distance" $ do
     it "euclidean distance should return euclidean distance between two vectors" $ do
       Distance.euclidean [1, 2] [4, 6] `shouldBe` 5

@@ -12,7 +12,7 @@ manhattan :: (Ord a, Floating a) => DistanceFunction a
 manhattan xs ys = minkowski 1 xs ys
 
 -- adding  to -1 is to account for cosine similarity of 1 meaning same orientation, -1 opposite and 0 orthogonal
-cosineDistance ::(Floating a) => DistanceFunction a
+cosineDistance ::(Ord a, Floating a) => DistanceFunction a
 cosineDistance xs ys = abs $ (+) (-1) $ (/) (sum $ zipWith (\x y -> x * y) xs ys) ((magnitude xs) * (magnitude ys))
 
 

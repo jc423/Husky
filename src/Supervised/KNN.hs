@@ -1,4 +1,4 @@
-module Supervised.KNN where
+module Supervised.KNN (Classified, Feature, Features, Neighbor, weighted, mostCommon, knn, euclideanKNN, cosineKNN, manhattanKNN)where
 
 import Data.Function
 import Data.List as List
@@ -6,40 +6,70 @@ import Data.Ord (comparing)
 import Distance
 import Sort
 
+-- | Feature is simply a Double for now
 type Feature = Double
+
+-- | Features represent a data point, with label known or unknown
 type Features = [Feature]
 
+-- | Represents an item with list of features and a label
 data Classified a = Classified {features::Features,
                                 label::a
                                }
+-- | Represents an neighbor of unknown item                    
 data Neighbor a = Neighbor {distance::Double,
                             labeled::a}
 
+-- | Instance of Eq for Neighbor
 instance Eq a => Eq (Neighbor a) where
   (==) (Neighbor d1 l1)  (Neighbor d2 l2) = l1 == l2
 
--- why do we need Ord a when compare is on distance
+-- | Instance of Ord for Neighbor
 instance Ord a => Ord (Neighbor a) where
   Neighbor d1 l1 `compare` Neighbor d2 l2 = d1 `compare` d2
   
-
-weighted::Ord a => [Neighbor a] -> a
+-- | In determining the label assigns weight of each neighbor to 1/distance
+weighted::Ord a =>
+          [Neighbor a] -- ^ List of neighbors
+        -> a -- ^ Return value
 weighted xs = labeled $ last $ sortBy (comparing distance)$ map (\x -> Neighbor {labeled=labeled (head x), distance=(sum [1/distance y | y <- x])}) $ group $ sortBy (comparing labeled) xs
 
-mostCommon:: Ord a => [Neighbor a] -> a
+-- | Determines label by choosing most frequent label among neighbors
+mostCommon:: Ord a => [Neighbor a] -- ^ List of neighbors
+          -> a  -- ^ Return value
 mostCommon xs = labeled $ head $ last $ sortBy (comparing length) $ group $ sortBy (comparing labeled) xs
 
-
-knn:: Ord a => DistanceFunction Feature -> Int -> ([Neighbor a] -> a) -> [Classified a] -> Features -> a
+-- | KNN implementation that offers flexibility in distance calculation, number of neighbors and weight function
+knn:: Ord a => DistanceFunction Feature -- ^ Distance function
+   -> Int -- ^ Number of neighbors to use
+   -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
+   -> [Classified a] -- ^ List of training data
+   -> Features -- ^ Unknown item
+   -> a -- ^ Label for unknown item
 knn dist k weightFn train unknown = weightFn $ take k $ sort $ List.map (\x -> Neighbor{labeled=(label x),distance=(dist (features x) unknown)}) train
 
-cosineKNN::Ord a => Int -> ([Neighbor a] -> a) -> [Classified a] -> Features -> a
+-- | KNN using cosine distance
+cosineKNN::Ord a => Int -- ^ Number of neighbors
+         -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
+         -> [Classified a] -- ^ List of training data
+         -> Features -- ^ Unknown item
+         -> a -- ^ Label
 cosineKNN = knn cosineDistance
 
-euclideanKNN::Ord a => Int -> ([Neighbor a] -> a) -> [Classified a] -> Features -> a
+-- | KNN using euclidean distance
+euclideanKNN::Ord a => Int -- ^ Number of neighbors
+         -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
+         -> [Classified a] -- ^ List of training data
+         -> Features -- ^ Unknown item
+         -> a -- ^ Label
 euclideanKNN = knn euclidean
 
-manhattanKNN::Ord a => Int -> ([Neighbor a] -> a) -> [Classified a] -> Features -> a
+-- | KNN using manhattan distance
+manhattanKNN::Ord a => Int -- ^ Number of neighbors
+         -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
+         -> [Classified a] -- ^ List of training data
+         -> Features -- ^ Unknown item
+         -> a -- ^ Label
 manhattanKNN = knn manhattan
 
 -- examples

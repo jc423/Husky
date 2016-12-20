@@ -6,29 +6,19 @@ class Attribute a where
   diff :: a -> a -> Double
   times :: a -> a -> Double
 
-instance Attribute String where
-  diff s1 s2 = fromIntegral $ (length s1) - (length s2)
-  times s1 s2 = fromIntegral $ (length s1) * (length s2)
-  
-instance Attribute Char where
-  diff c1 c2 = fromIntegral $ fromEnum c1 - fromEnum c2
-  times c1 c2 = fromIntegral $ fromEnum c1 * fromEnum c2
-  
-instance Attribute Double  where
-  diff d1 d2 = d1 - d2
-  times d1 d2 = d1 * d2
+data Feature = FString String | FInt Int | FDouble Double | FChar Char deriving (Eq, Ord)
 
-instance Attribute Integer  where
-  diff d1 d2 = fromIntegral $ d1 - d2
-  times d1 d2 = fromIntegral $ d1 * d2
-
-instance Attribute Int  where
-  diff d1 d2 = fromIntegral $ d1 - d2
-  times d1 d2 = fromIntegral $ d1 * d2
+instance Attribute Feature where
+  diff (FString s1) (FString s2) = fromIntegral $ (length s1) - (length s2)
+  diff (FInt s1) (FInt s2) = fromIntegral $ s1 -  s2
+  diff _ _ = error "unable to diff a0 a1"
+  times (FString s1) (FString s2) = 0.0
+  times (FInt s1) (FInt s2) = fromIntegral $ s1 * s2
+  times _ _ = error "unable to times a0 a1"
 
 
 -- | Represents an item with list of features and a label
-data Classified a b = Classified {features::[b],
+data Classified a = Classified {features::[Feature],
                                 label::a
                                }
 

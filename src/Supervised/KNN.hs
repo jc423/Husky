@@ -1,21 +1,11 @@
-module Supervised.KNN (Classified, Feature, Features, Neighbor, weighted, mostCommon, knn, euclideanKNN, cosineKNN, manhattanKNN)where
+module Supervised.KNN (Classified, Neighbor, weighted, mostCommon, knn, euclideanKNN, cosineKNN, manhattanKNN) where
 
 import Data.Function
 import Data.List as List
 import Data.Ord (comparing)
+import HuskyML
 import Distance
 import Sort
-
--- | Feature is simply a Double for now
-type Feature = Double
-
--- | Features represent a data point, with label known or unknown
-type Features = [Feature]
-
--- | Represents an item with list of features and a label
-data Classified a = Classified {features::Features,
-                                label::a
-                               }
 -- | Represents an neighbor of unknown item                    
 data Neighbor a = Neighbor {distance::Double,
                             labeled::a}
@@ -40,35 +30,35 @@ mostCommon:: Ord a => [Neighbor a] -- ^ List of neighbors
 mostCommon xs = labeled $ head $ last $ sortBy (comparing length) $ group $ sortBy (comparing labeled) xs
 
 -- | KNN implementation that offers flexibility in distance calculation, number of neighbors and weight function
-knn:: Ord a => DistanceFunction Feature -- ^ Distance function
+knn:: (Ord a) => DistanceFunction -- ^ Distance function
    -> Int -- ^ Number of neighbors to use
    -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
    -> [Classified a] -- ^ List of training data
-   -> Features -- ^ Unknown item
+   -> [Feature] -- ^ Unknown item
    -> a -- ^ Label for unknown item
 knn dist k weightFn train unknown = weightFn $ take k $ sort $ List.map (\x -> Neighbor{labeled=(label x),distance=(dist (features x) unknown)}) train
 
 -- | KNN using cosine distance
-cosineKNN::Ord a => Int -- ^ Number of neighbors
+cosineKNN::(Ord a) => Int -- ^ Number of neighbors
          -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
          -> [Classified a] -- ^ List of training data
-         -> Features -- ^ Unknown item
+         -> [Feature] -- ^ Unknown item
          -> a -- ^ Label
 cosineKNN = knn cosineDistance
 
 -- | KNN using euclidean distance
-euclideanKNN::Ord a => Int -- ^ Number of neighbors
+euclideanKNN::(Ord a) => Int -- ^ Number of neighbors
          -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
          -> [Classified a] -- ^ List of training data
-         -> Features -- ^ Unknown item
+         -> [Feature] -- ^ Unknown item
          -> a -- ^ Label
 euclideanKNN = knn euclidean
 
 -- | KNN using manhattan distance
-manhattanKNN::Ord a => Int -- ^ Number of neighbors
+manhattanKNN::(Ord a) => Int -- ^ Number of neighbors
          -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
          -> [Classified a] -- ^ List of training data
-         -> Features -- ^ Unknown item
+         -> [Feature] -- ^ Unknown item
          -> a -- ^ Label
 manhattanKNN = knn manhattan
 
@@ -76,7 +66,7 @@ manhattanKNN = knn manhattan
   
 unknownCar1 = [6030.0, 160.0, 280.0]
 unknownCar2 = [2015.0, 10.0, 1500.0]
-
+{-
 carsPrice = [Classified { features=[1982.0, 30.0, 1200.0], label=3000.0 },
         Classified { features=[1981.0, 20.0, 1300.0], label=2000.0 },
         Classified { features=[1983.0, 10.0, 1500.0], label=2000.0 },
@@ -93,5 +83,4 @@ carsAge = [Classified { features=[1982.0, 30.0, 1200.0], label="ancient" },
         Classified { features=[2010.0, 70.0, 130.0], label="eh" },
         Classified { features=[2010.0, 50.0, 140.0], label="new" }];
 
-
-
+-}

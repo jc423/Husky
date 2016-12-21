@@ -64,23 +64,23 @@ manhattanKNN = knn manhattan
 
 -- examples
   
-unknownCar1 = [6030.0, 160.0, 280.0]
-unknownCar2 = [2015.0, 10.0, 1500.0]
-{-
-carsPrice = [Classified { features=[1982.0, 30.0, 1200.0], label=3000.0 },
-        Classified { features=[1981.0, 20.0, 1300.0], label=2000.0 },
-        Classified { features=[1983.0, 10.0, 1500.0], label=2000.0 },
-        Classified { features=[1985.0, 5.0, 1100.0], label=1000.0 },
-        Classified { features=[2011.0, 60.0, 120.0], label=10000.0 },
-        Classified { features=[2010.0, 70.0, 130.0], label=10000.0 },
-        Classified { features=[3015.0, 80.0, 140.0], label=30000.0 }];
+unknownCar1 = [FDouble 6030.0, FString "Toyota", FInt 280]
+unknownCar2 = [FDouble 2015.0, FString "Ford", FInt 1500]
 
-carsAge = [Classified { features=[1982.0, 30.0, 1200.0], label="ancient" },
-        Classified { features=[1981.0, 20.0, 1300.0], label="old" },
-        Classified { features=[1983.0, 10.0, 1500.0], label="old" },
-        Classified { features=[1985.0, 5.0, 1000.0], label="old" },
-        Classified { features=[2011.0, 60.0, 120.0], label="eh" },
-        Classified { features=[2010.0, 70.0, 130.0], label="eh" },
-        Classified { features=[2010.0, 50.0, 140.0], label="new" }];
+carsPrice = [Classified { features=[FDouble 1982.0, FString "Toyota", FInt 1200], label=3000.0 },
+        Classified { features=[FDouble 1981.0, FString "Toyota", FInt 1300], label=2000.0 },
+        Classified { features=[FDouble 1983.0, FString "Nissan", FInt 1500], label=2000.0 },
+        Classified { features=[FDouble 1985.0, FString "Toyota", FInt 1100], label=1000.0 },
+        Classified { features=[FDouble 2011.0, FString "Jaguar", FInt 120], label=10000.0 },
+        Classified { features=[FDouble 2010.0, FString "Honda", FInt 130], label=10000.0 },
+        Classified { features=[FDouble 3015.0, FString "Subaru", FInt 140], label=30000.0 }];
 
--}
+carsAge = [Classified { features=[FDouble 1982.0, FString "Toyota", FInt 1200], label="ancient" },
+        Classified { features=[FDouble 1981.0, FString "Toyota", FInt 1300], label="ancient" },
+        Classified { features=[FDouble 1983.0, FString "Nissan", FInt 1500], label="ancient" },
+        Classified { features=[FDouble 1985.0, FString "Toyota", FInt 1100], label="old" },
+        Classified { features=[FDouble 2011.0, FString "Jaguar", FInt 120], label="eh" },
+        Classified { features=[FDouble 2010.0, FString "Honda", FInt 130], label="eh" },
+        Classified { features=[FDouble 3015.0, FString "Subaru", FInt 140], label="new" }];
+
+

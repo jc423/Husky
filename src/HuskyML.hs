@@ -1,5 +1,3 @@
-{-# LANGUAGE FlexibleInstances #-}
-
 module HuskyML where
 
 class Attribute a where

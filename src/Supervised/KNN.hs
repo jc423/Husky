@@ -22,13 +22,18 @@ instance Ord a => Ord (Neighbor a) where
 weighted::Ord a =>
           [Neighbor a] -- ^ List of neighbors
         -> a -- ^ Return value
-weighted xs = labeled $ last $ sortBy (comparing distance)$ map (\x -> Neighbor {labeled=labeled (head x), distance=(sum [1/distance y | y <- x])}) $ group $ sortBy (comparing labeled) xs
+weighted xs = closestLabel $ map (aggregateDistanceForLabelGroup) $ groupByLabel xs
+  where groupByLabel = group . sortBy (comparing labeled)
+        aggregateDistanceForLabelGroup = \x -> Neighbor {labeled=labeled (head x), distance=(sum [1/distance y | y <- x])}
+        closestLabel = labeled . last . sortBy (comparing distance)
 
 -- | Determines label by choosing most frequent label among neighbors
 mostCommon:: Ord a => [Neighbor a] -- ^ List of neighbors
           -> a  -- ^ Return value
-mostCommon xs = labeled $ head $ last $ sortBy (comparing length) $ group $ sortBy (comparing labeled) xs
-
+mostCommon xs = mostCommonLabel $ sortBy (comparing length) $ groupByLabel xs
+  where groupByLabel = group . sortBy (comparing labeled)
+        mostCommonLabel = labeled . head . last
+  
 -- | KNN implementation that offers flexibility in distance calculation, number of neighbors and weight function
 knn:: (Ord a) => DistanceFunction -- ^ Distance function
    -> Int -- ^ Number of neighbors to use
@@ -36,7 +41,8 @@ knn:: (Ord a) => DistanceFunction -- ^ Distance function
    -> [Classified a] -- ^ List of training data
    -> [Feature] -- ^ Unknown item
    -> a -- ^ Label for unknown item
-knn dist k weightFn train unknown = weightFn $ take k $ sort $ List.map (\x -> Neighbor{labeled=(label x),distance=(dist (features x) unknown)}) train
+knn dist k weightFn train unknown = weightFn $ takeKNearest $ List.map (\x -> Neighbor{labeled=(label x),distance=(dist (features x) unknown)}) train
+  where takeKNearest = take k . sort
 
 -- | KNN using cosine distance
 cosineKNN::(Ord a) => Int -- ^ Number of neighbors

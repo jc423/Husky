@@ -1,4 +1,17 @@
-module Supervised.KNN (Classified, Neighbor, weighted, mostCommon, knnClassification, euclideanKNN, cosineKNN, manhattanKNN) where
+module Supervised.KNN (
+  Classified,
+  Neighbor,
+  weighted,
+  mostCommon,
+  knnClassification,
+  knnRegression,
+  euclideanKNNClassification,
+  euclideanKNNRegression,
+  cosineKNNClassification,
+  cosineKNNRegression,
+  manhattanKNNClassification,
+  manhattanKNNRegression
+  ) where
 
 import Data.Function
 import Data.List as List
@@ -43,7 +56,7 @@ kNearestNeighbors :: (Ord a) => Int -- ^ Number of neighbors
 kNearestNeighbors k distFunc training unknown = takeKNearest $ List.map (\x -> Neighbor{labeled=(label x),distance=(distFunc (features x) unknown)}) training                
   where takeKNearest = take k . sort
   
--- | KNN implementation that offers flexibility in distance calculation, number of neighbors and weight function
+-- | KNN Classification implementation that offers flexibility in distance calculation, number of neighbors and weight function
 knnClassification:: (Ord a) => DistanceFunction -- ^ Distance function
    -> Int -- ^ Number of neighbors to use
    -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
@@ -52,30 +65,61 @@ knnClassification:: (Ord a) => DistanceFunction -- ^ Distance function
    -> a -- ^ Label for unknown item
 knnClassification dist k weightFn train unknown = weightFn $ kNearestNeighbors k dist train unknown
 
+-- | KNN Regression implementation that offers flexibility in distance calculation, number of neighbors and weight function
+knnRegression:: (Ord a, Fractional a) => DistanceFunction -- ^ Distance function
+   -> Int -- ^ Number of neighbors to use
+   -> [Classified a] -- ^ List of training data
+   -> [Feature] -- ^ Unknown item
+   -> a -- ^ Label for unknown item
+knnRegression dist k train unknown = avgOfNeighbors $ kNearestNeighbors k dist train unknown
+  where avgOfNeighbors = (/ (fromIntegral k)) . sum . map (\x -> labeled x)
+
 
 -- | KNN using cosine distance
-cosineKNN::(Ord a) => Int -- ^ Number of neighbors
+cosineKNNClassification::(Ord a) => Int -- ^ Number of neighbors
          -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
          -> [Classified a] -- ^ List of training data
          -> [Feature] -- ^ Unknown item
          -> a -- ^ Label
-cosineKNN = knnClassification cosineDistance
+cosineKNNClassification = knnClassification cosineDistance
+
+-- | KNN regression using cosine distance
+cosineKNNRegression::(Ord a, Fractional a) => Int -- ^ Number of neighbors
+         -> [Classified a] -- ^ List of training data
+         -> [Feature] -- ^ Unknown item
+         -> a -- ^ Label
+cosineKNNRegression = knnRegression cosineDistance
+
 
 -- | KNN using euclidean distance
-euclideanKNN::(Ord a) => Int -- ^ Number of neighbors
+euclideanKNNClassification::(Ord a) => Int -- ^ Number of neighbors
          -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
          -> [Classified a] -- ^ List of training data
          -> [Feature] -- ^ Unknown item
          -> a -- ^ Label
-euclideanKNN = knnClassification euclidean
+euclideanKNNClassification = knnClassification euclidean
+
+-- | KNN regression using euclidean distance
+euclideanKNNRegression::(Ord a, Fractional a) => Int -- ^ Number of neighbors
+         -> [Classified a] -- ^ List of training data
+         -> [Feature] -- ^ Unknown item
+         -> a -- ^ Label
+euclideanKNNRegression = knnRegression euclidean
 
 -- | KNN using manhattan distance
-manhattanKNN::(Ord a) => Int -- ^ Number of neighbors
+manhattanKNNClassification::(Ord a) => Int -- ^ Number of neighbors
          -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
          -> [Classified a] -- ^ List of training data
          -> [Feature] -- ^ Unknown item
          -> a -- ^ Label
-manhattanKNN = knnClassification manhattan
+manhattanKNNClassification = knnClassification manhattan
+
+-- | KNN regression using manahattan distance
+manhattanKNNRegression::(Ord a, Fractional a) => Int -- ^ Number of neighbors
+         -> [Classified a] -- ^ List of training data
+         -> [Feature] -- ^ Unknown item
+         -> a -- ^ Label
+manhattanKNNRegression = knnRegression manhattan
 
 -- examples
   

@@ -24,7 +24,7 @@ weighted::Ord a =>
         -> a -- ^ Return value
 weighted xs = closestLabel $ map (aggregateDistanceForLabelGroup) $ groupByLabel xs
   where groupByLabel = group . sortBy (comparing labeled)
-        aggregateDistanceForLabelGroup = \x -> Neighbor {labeled=labeled (head x), distance=(sum [1/distance y | y <- x])}
+        aggregateDistanceForLabelGroup = \x -> Neighbor {labeled=labeled (head x), distance=(sum [1/distance y + 1 | y <- x])}
         closestLabel = labeled . last . sortBy (comparing distance)
 
 -- | Determines label by choosing most frequent label among neighbors

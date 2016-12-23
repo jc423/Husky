@@ -39,17 +39,17 @@ spec = do
     describe "custom distance" $ do
       describe "weighted" $ do
         it "with only many train data and one neighbor should return that closest neighbor" $ do
-          knn customDistance 1 weighted carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "crappy"
+          knnClassification customDistance 1 weighted carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "crappy"
 
         it "with only many train data and multiple neighbors should return expected label" $ do
-          knn customDistance 1 weighted carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "crappy"
+          knnClassification customDistance 1 weighted carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "crappy"
 
       describe "mostCommon" $ do
         it "with many train data and one neighbor should return that label of closest neighbor" $ do
-          knn customDistance 1 mostCommon carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "crappy"
+          knnClassification customDistance 1 mostCommon carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "crappy"
 
         it "with many train data and multiple neighbors should return expected label" $ do
-          knn customDistance 3 mostCommon carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "reliable"
+          knnClassification customDistance 3 mostCommon carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "reliable"
 
 -- this distance function will actually result in labels that are farthest away
 customDistance xs ys = 1 / euclidean xs ys

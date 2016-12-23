@@ -2,8 +2,9 @@
 
 ** Resources
 [[http://www.csee.umbc.edu/~tinoosh/cmpe650/slides/K_Nearest_Neighbor_Algorithm.pdf][Weighted KNN - Siddharth Deokar]]
+[[https://www.youtube.com/watch?v=GbhZcvPLbQg&index=2&list=PLBv09BD7ez_68OwSB97WXyIOvvI5nqi-3][k-NN - Victor Lavrenko Youtube]]
 
-** Attributes
+** Terms and Attributes
 + Supervised Learning
   + Classification - output class membership
   + Regression - average value of knn
@@ -11,21 +12,55 @@
 + Configurability
   + Weight contributions of neighbors by distance
 + Drawbacks
-  + Sensitive to local data structure
+  + Sensitive to local data structure, outliers
+    + take more neighbors
   + Curse of Dimensionality - problematic when only few features are relevant but distance calculated using several
-+ Distance
-  + [[file:distances/euclidean-distance.org][Euclidean Distance]]
+  + Can't be missing any values for features
+    + want to have as little impact on distance as possible
+    + take average of feature across dataset
+  + Computationaly expensive
+    + space - need to store all training data
+    + time - O(nd)
++ [[file:distances/euclidean-distance.org][Distances]]
+  + Euclidean Distance
   + Minkowski Distance
   + Mahalanobis Distance
+  + Hamming Distance for categorical data
++ Vournoi Cell
+  + Set of point in space closer to training point than any other
+  + Exists around every training point and forms Vournoi Tesselation
+  + Boundary formed at edges of cells where classes differ
++ Potential for ties
+  + random
+  + use prior
+  + nearest 1-nn
++ Confidence can be calculated by (neighbors with output label) / (total neighbors)
++ Similar
+  + Parzen Windows - volume fixed
 
 ** Algorithm
-*** Weighted K Nearest Neighbor
-**** Approach 1
-1. Assign weights to features
-2. Calculate classification error
-3. Adjust weights to account for error
-4. Repeat till accurate enough
-
-**** Approach 2
-1. Use all features
-2. Remove feature and test for improvement
+[[file:~/Me/haskell-projects/Husky/src/Supervised/KNN.hs][KNN implementation]]
+*** Classification
+Given training data ${x_i, y_i}$ and an unknown point x, compute the distance between each
+training data and x.  Take k closest neighbors and output class appearing most frequently.
+*** Regession
+Same as above but take mean of labels.
+** Choosing Neighbors
+- large value will result in most frequent class -> approaches prior
+- small value will overfit
+- Cross-validation
+  - Split into training and test and try for different values of k
+** Optimizations
+- Classic KNN performance O(nd) - n training points with d dimensions
+  - reduce N, only check M of N training points
+- K-d trees
+  - for low dimensional, real valued data
+  - O(d log n)
+  - can miss neighbors
+  - choose attribute, find median and split on median (repeat as necessary)
+  - for unknown traverse tree and perform knn on subset of training data; "drop to bucket"
+- Inverted List
+  - high dimensional, real valued; by being high dimesional vectors of attributes will be sparse
+  - O (d'n') where d' < d and n' < n
+  - for each attribute, list training data containing attribute
+  - for unknown get all training data containing at least one attribute from unknown

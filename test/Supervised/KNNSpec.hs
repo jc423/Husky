@@ -14,42 +14,50 @@ spec :: Spec
 spec = do
   -- when choosing unknown we try to make visible match with cluster
   describe "KNN" $ do
-    describe "euclidean distance" $ do
-      it "with only one train data and one neighbor should return that label" $ do
-        euclideanKNN 1 weighted [Classified [FInt 3] "Joe"] [FInt 2] `shouldBe` "Joe"
+    describe "Classification" $ do
+      describe "euclidean distance" $ do
+        it "with only one train data and one neighbor should return that label" $ do
+          euclideanKNNClassification 1 weighted [Classified [FInt 3] "Joe"] [FInt 2] `shouldBe` "Joe"
 
-      it "with only one train data and multiple neighbors should return that label" $ do
-        euclideanKNN 3 weighted [Classified [FInt 3] "Joe"] [FInt 2] `shouldBe` "Joe"
+        it "with only one train data and multiple neighbors should return that label" $ do
+          euclideanKNNClassification 3 weighted [Classified [FInt 3] "Joe"] [FInt 2] `shouldBe` "Joe"
 
-      describe "weighted" $ do
-        it "with many train data and one neighbor should return that label of closest neighbor" $ do
-          euclideanKNN 1 weighted carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "nice"
+        describe "weighted" $ do
+          it "with many train data and one neighbor should return that label of closest neighbor" $ do
+            euclideanKNNClassification 1 weighted carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "nice"
 
-        it "with many train data and multiple neighbors should return expected label" $ do
-          euclideanKNN 3 weighted carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "nice"
+          it "with many train data and multiple neighbors should return expected label" $ do
+            euclideanKNNClassification 3 weighted carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "nice"
 
-      describe "mostCommon" $ do
-        it "with many train data and one neighbor should return that label of closest neighbor" $ do
-          euclideanKNN 1 mostCommon carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "nice"
+        describe "mostCommon" $ do
+          it "with many train data and one neighbor should return that label of closest neighbor" $ do
+            euclideanKNNClassification 1 mostCommon carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "nice"
 
-        it "with many train data and multiple neighbors should return expected label" $ do
-          euclideanKNN 3 mostCommon carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "eh"
+          it "with many train data and multiple neighbors should return expected label" $ do
+            euclideanKNNClassification 3 mostCommon carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "eh"
 
-    -- custom distance function inverts euclidean distance
-    describe "custom distance" $ do
-      describe "weighted" $ do
-        it "with only many train data and one neighbor should return that closest neighbor" $ do
-          knnClassification customDistance 1 weighted carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "crappy"
+      -- custom distance function inverts euclidean distance
+      describe "custom distance" $ do
+        describe "weighted" $ do
+          it "with many train data and one neighbor should return that closest neighbor" $ do
+            knnClassification customDistance 1 weighted carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "crappy"
 
-        it "with only many train data and multiple neighbors should return expected label" $ do
-          knnClassification customDistance 1 weighted carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "crappy"
+          it "with many train data and multiple neighbors should return expected label" $ do
+            knnClassification customDistance 1 weighted carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "crappy"
 
-      describe "mostCommon" $ do
-        it "with many train data and one neighbor should return that label of closest neighbor" $ do
-          knnClassification customDistance 1 mostCommon carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "crappy"
+        describe "mostCommon" $ do
+          it "with many train data and one neighbor should return that label of closest neighbor" $ do
+            knnClassification customDistance 1 mostCommon carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "crappy"
 
-        it "with many train data and multiple neighbors should return expected label" $ do
-          knnClassification customDistance 3 mostCommon carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "reliable"
+          it "with many train data and multiple neighbors should return expected label" $ do
+            knnClassification customDistance 3 mostCommon carsData [FInt 2015, FString "Subaru", FInt 141] `shouldBe` "reliable"
+
+      describe "Regression" $ do
+        it "with only one training data and one neighbor should return value of training data" $ do
+          euclideanKNNRegression 1 [Classified [FInt 3] 4.0] [FInt 2] `shouldBe` 4.0
+
+        it "with multiple training data and multiple neighbors should return the average of the closest neighbors" $ do
+          euclideanKNNRegression 2 [Classified [FInt 3] 4.0, Classified [FInt 6] 10.0, Classified [FInt 4] 6.0] [FInt 2] `shouldBe` 5.0 -- should average 1st and 3rd training data
 
 -- this distance function will actually result in labels that are farthest away
 customDistance xs ys = 1 / euclidean xs ys

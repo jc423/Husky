@@ -1,4 +1,4 @@
-module Supervised.KNN (Classified, Neighbor, weighted, mostCommon, knn, euclideanKNN, cosineKNN, manhattanKNN) where
+module Supervised.KNN (Classified, Neighbor, weighted, mostCommon, knnClassification, euclideanKNN, cosineKNN, manhattanKNN) where
 
 import Data.Function
 import Data.List as List
@@ -33,16 +33,25 @@ mostCommon:: Ord a => [Neighbor a] -- ^ List of neighbors
 mostCommon xs = mostCommonLabel $ sortBy (comparing length) $ groupByLabel xs
   where groupByLabel = group . sortBy (comparing labeled)
         mostCommonLabel = labeled . head . last
+
+-- | Nearest Neghbors
+kNearestNeighbors :: (Ord a) => Int -- ^ Number of neighbors
+                  -> DistanceFunction -- ^ Distance function
+                 -> [Classified a] -- ^ List of training data
+                 -> [Feature] -- ^ Unknown item
+                 -> [Neighbor a] -- ^ returns nearest neighbors
+kNearestNeighbors k distFunc training unknown = takeKNearest $ List.map (\x -> Neighbor{labeled=(label x),distance=(distFunc (features x) unknown)}) training                
+  where takeKNearest = take k . sort
   
 -- | KNN implementation that offers flexibility in distance calculation, number of neighbors and weight function
-knn:: (Ord a) => DistanceFunction -- ^ Distance function
+knnClassification:: (Ord a) => DistanceFunction -- ^ Distance function
    -> Int -- ^ Number of neighbors to use
    -> ([Neighbor a] -> a) -- ^ Function for assigning weights to neighbors
    -> [Classified a] -- ^ List of training data
    -> [Feature] -- ^ Unknown item
    -> a -- ^ Label for unknown item
-knn dist k weightFn train unknown = weightFn $ takeKNearest $ List.map (\x -> Neighbor{labeled=(label x),distance=(dist (features x) unknown)}) train
-  where takeKNearest = take k . sort
+knnClassification dist k weightFn train unknown = weightFn $ kNearestNeighbors k dist train unknown
+
 
 -- | KNN using cosine distance
 cosineKNN::(Ord a) => Int -- ^ Number of neighbors
@@ -50,7 +59,7 @@ cosineKNN::(Ord a) => Int -- ^ Number of neighbors
          -> [Classified a] -- ^ List of training data
          -> [Feature] -- ^ Unknown item
          -> a -- ^ Label
-cosineKNN = knn cosineDistance
+cosineKNN = knnClassification cosineDistance
 
 -- | KNN using euclidean distance
 euclideanKNN::(Ord a) => Int -- ^ Number of neighbors
@@ -58,7 +67,7 @@ euclideanKNN::(Ord a) => Int -- ^ Number of neighbors
          -> [Classified a] -- ^ List of training data
          -> [Feature] -- ^ Unknown item
          -> a -- ^ Label
-euclideanKNN = knn euclidean
+euclideanKNN = knnClassification euclidean
 
 -- | KNN using manhattan distance
 manhattanKNN::(Ord a) => Int -- ^ Number of neighbors
@@ -66,7 +75,7 @@ manhattanKNN::(Ord a) => Int -- ^ Number of neighbors
          -> [Classified a] -- ^ List of training data
          -> [Feature] -- ^ Unknown item
          -> a -- ^ Label
-manhattanKNN = knn manhattan
+manhattanKNN = knnClassification manhattan
 
 -- examples
   

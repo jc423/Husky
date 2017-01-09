@@ -10,7 +10,10 @@ module Supervised.KNN (
   cosineKNNClassification,
   cosineKNNRegression,
   manhattanKNNClassification,
-  manhattanKNNRegression
+  manhattanKNNRegression,
+  KDTree(Node, left, right, this, Leaf),
+  createKDTree,
+  getNeighborhood,
   ) where
 
 import Data.Function
@@ -121,25 +124,35 @@ manhattanKNNRegression::(Ord a, Fractional a) => Int -- ^ Number of neighbors
          -> a -- ^ Label
 manhattanKNNRegression = knnRegression manhattan
 
--- examples
-  
-unknownCar1 = [FDouble 6030.0, FString "Toyota", FInt 280]
-unknownCar2 = [FDouble 2015.0, FString "Ford", FInt 1500]
+-- KD Tree optimization
 
-carsPrice = [Classified { features=[FDouble 1982.0, FString "Toyota", FInt 1200], label=3000.0 },
-        Classified { features=[FDouble 1981.0, FString "Toyota", FInt 1300], label=2000.0 },
-        Classified { features=[FDouble 1983.0, FString "Nissan", FInt 1500], label=2000.0 },
-        Classified { features=[FDouble 1985.0, FString "Toyota", FInt 1100], label=1000.0 },
-        Classified { features=[FDouble 2011.0, FString "Jaguar", FInt 120], label=10000.0 },
-        Classified { features=[FDouble 2010.0, FString "Honda", FInt 130], label=10000.0 },
-        Classified { features=[FDouble 3015.0, FString "Subaru", FInt 140], label=30000.0 }];
+data KDTree a = Node {left::KDTree a, right::KDTree a, this::Classified a}  | Leaf [Classified a] deriving (Eq, Show)
 
-carsAge = [Classified { features=[FDouble 1982.0, FString "Toyota", FInt 1200], label="ancient" },
-        Classified { features=[FDouble 1981.0, FString "Toyota", FInt 1300], label="ancient" },
-        Classified { features=[FDouble 1983.0, FString "Nissan", FInt 1500], label="ancient" },
-        Classified { features=[FDouble 1985.0, FString "Toyota", FInt 1100], label="old" },
-        Classified { features=[FDouble 2011.0, FString "Jaguar", FInt 120], label="eh" },
-        Classified { features=[FDouble 2010.0, FString "Honda", FInt 130], label="eh" },
-        Classified { features=[FDouble 3015.0, FString "Subaru", FInt 140], label="new" }];
+-- | KD tree implementation.  Attribute chosen is increased by one for each level.
+createKDTree :: (Ord a) => [Classified a] -- ^ List of training data
+             -> [Int] -- ^ indexes of attributes to split on
+             -> KDTree a -- ^ returns KDTree
+createKDTree [] _ = Leaf []
+createKDTree train [] = Leaf train
+createKDTree train splits = 
+  Node {this=current, left=leftTree, right=rightTree}
+  where fIndex = head splits
+        sortedTraining = sortTraining train fIndex
+        midpoint = (length sortedTraining) `div` 2
+        leftTree = createKDTree (take midpoint sortedTraining) (tail splits)
+        rightTree = createKDTree (drop (midpoint + 1) sortedTraining) (tail splits)
+        current = sortedTraining !! midpoint
 
+-- | For an unknown point gets neighborhood to check against.  This decreases complexity because not all training data checked against.
+getNeighborhood :: KDTree a -- ^ KDTree
+                -> [Feature] -- ^ Unknown item
+                -> Int -- ^ Index of initial attribute to check
+                -> [Classified a] -- ^ Neighborhood of training data
+getNeighborhood kdTree unknown fIndex = case kdTree of
+  Node lft rgt this -> case (unknown !! fIndex) < ((!! fIndex) $ features this) of
+                          True -> getNeighborhood lft unknown (fIndex + 1)
+                          False -> getNeighborhood rgt unknown (fIndex + 1)
+  Leaf neighborhood -> neighborhood
 
+sortTraining :: [Classified a] -> Int -> [Classified a]
+sortTraining train fIndex = sortBy (comparing ((!! fIndex) . features)) train

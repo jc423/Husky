@@ -22,5 +22,5 @@ instance Attribute Feature where
 -- | Represents an item with list of features and a label
 data Classified a = Classified {features::[Feature],
                                 label::a
-                               } deriving (Show)
+                               } deriving (Show, Eq)
 

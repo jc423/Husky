@@ -59,6 +59,22 @@ spec = do
         it "with multiple training data and multiple neighbors should return the average of the closest neighbors" $ do
           euclideanKNNRegression 2 [Classified [FInt 3] 4.0, Classified [FInt 6] 10.0, Classified [FInt 4] 6.0] [FInt 2] `shouldBe` 5.0 -- should average 1st and 3rd training data
 
+
+  describe "KDTree" $ do
+    it "should return a binary tree of two levels given list of classifieds and list of one splits" $ do
+      let a = Classified [FInt 4] 6.0
+          b = Classified [FInt 2] 6.0
+          c = Classified [FInt 3] 4.0
+          d = Classified [FInt 6] 10.0
+        in createKDTree [a, b, c, d] [0] `shouldBe` Node {this=a, left=Leaf [b,c], right=Leaf [d]}
+
+    it "should return a binary tree of two levels given list of three classifieds and list of two splits" $ do
+      let a = Classified [FInt 4] 6.0
+          b = Classified [FInt 2] 6.0
+          c = Classified [FInt 3] 4.0
+        in createKDTree [a, b, c] [0,1] `shouldBe` Node {this=c, left=Node {this=b, left=Leaf [], right=Leaf []}, right=Node {this=a, left=Leaf [], right=Leaf []}}
+
+
 -- this distance function will actually result in labels that are farthest away
 customDistance xs ys = 1 / euclidean xs ys
 

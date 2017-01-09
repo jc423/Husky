@@ -11,7 +11,7 @@ module Supervised.KNN (
   cosineKNNRegression,
   manhattanKNNClassification,
   manhattanKNNRegression,
-  KDTree,
+  KDTree(Node, left, right, this, Leaf),
   createKDTree,
   getNeighborhood,
   ) where
@@ -126,22 +126,21 @@ manhattanKNNRegression = knnRegression manhattan
 
 -- KD Tree optimization
 
-data KDTree a = Node {left::KDTree a, right::KDTree a, this::Classified a}  | Leaf [Classified a] deriving (Show)
+data KDTree a = Node {left::KDTree a, right::KDTree a, this::Classified a}  | Leaf [Classified a] deriving (Eq, Show)
 
 -- | KD tree implementation.  Attribute chosen is increased by one for each level.
 createKDTree :: (Ord a) => [Classified a] -- ^ List of training data
-             -> Int -- ^ index of intial attribute to split on
-             -> Int -- ^ number of level in tree
+             -> [Int] -- ^ indexes of attributes to split on
              -> KDTree a -- ^ returns KDTree
-createKDTree [] _ _ = Leaf []
-createKDTree train _ 0 = Leaf train
-createKDTree train fIndex levels
-  | fIndex + 1 > (length $ features (train !! 0)) = Leaf []
-  | otherwise =  Node {left=leftTree, right=rightTree, this=current}
-  where sortedTraining = sortTraining train fIndex
+createKDTree [] _ = Leaf []
+createKDTree train [] = Leaf train
+createKDTree train splits = 
+  Node {this=current, left=leftTree, right=rightTree}
+  where fIndex = head splits
+        sortedTraining = sortTraining train fIndex
         midpoint = (length sortedTraining) `div` 2
-        leftTree = createKDTree (take midpoint sortedTraining) (fIndex + 1) (levels - 1)
-        rightTree = createKDTree (drop (midpoint + 1) sortedTraining) (fIndex + 1) (levels - 1)
+        leftTree = createKDTree (take midpoint sortedTraining) (tail splits)
+        rightTree = createKDTree (drop (midpoint + 1) sortedTraining) (tail splits)
         current = sortedTraining !! midpoint
 
 -- | For an unknown point gets neighborhood to check against.  This decreases complexity because not all training data checked against.

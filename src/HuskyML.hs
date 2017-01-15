@@ -4,6 +4,16 @@ class Attribute a where
   diff :: a -> a -> Double
   times :: a -> a -> Double
 
+class TrainingPt a where
+  features :: a -> [Feature]
+
+instance TrainingPt (Classified a) where
+  features (Classified xs _) = xs
+
+instance TrainingPt Unclassified where
+  features (Unclassified xs) = xs
+
+  
 data Feature = FString String | FInt Int | FDouble Double | FChar Char deriving (Eq, Ord, Show)
 
 instance Attribute Feature where
@@ -19,8 +29,13 @@ instance Attribute Feature where
   times _ _ = error "unable to times a0 a1"
 
 
--- | Represents an item with list of features and a label
-data Classified a = Classified {features::[Feature],
-                                label::a
-                               } deriving (Show, Eq)
+-- | Represents a classified data point
+data Classified a = Classified [Feature] a deriving (Show, Eq)
+
+-- | Represents unclassified data point
+data Unclassified = Unclassified [Feature] deriving (Show, Eq)
+
+label :: Classified a -> a
+label (Classified _ x) = x
+
 

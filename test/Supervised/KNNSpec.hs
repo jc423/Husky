@@ -83,12 +83,12 @@ customDistance xs ys = 1 / euclidean xs ys
 -- Cluster 2 containing wow
 -- Cluster 3 containing nice, 2 wow
 carsData = [
-  Classified { features=[FInt 1979, FString "Toyota", FInt 1500], label="crappy" }, -- FInt 1979 impacts weighted KNN
-  Classified { features=[FInt 1983, FString "Toyota", FInt 1500], label="reliable" },
-  Classified { features=[FInt 1983, FString "Nissan", FInt 1500], label="reliable" },
-  Classified { features=[FInt 2000, FString "Toyota", FInt 1100], label="wow" },
-  Classified { features=[FInt 2010, FString "Subaru", FInt 140], label="eh" },-- FInt 2010 impacts weighted KNN
-  Classified { features=[FInt 2014, FString "Subaru", FInt 140], label="eh" },
-  Classified { features=[FInt 2015, FString "Subaru", FInt 140], label="nice" }];
+  Classified [FInt 1979, FString "Toyota", FInt 1500] "crappy", -- FInt 1979 impacts weighted KNN
+  Classified [FInt 1983, FString "Toyota", FInt 1500] "reliable",
+  Classified [FInt 1983, FString "Nissan", FInt 1500] "reliable",
+  Classified [FInt 2000, FString "Toyota", FInt 1100] "wow",
+  Classified [FInt 2010, FString "Subaru", FInt 140] "eh",-- FInt 2010 impacts weighted KNN
+  Classified [FInt 2014, FString "Subaru", FInt 140] "eh",
+  Classified [FInt 2015, FString "Subaru", FInt 140] "nice"];
 
 
